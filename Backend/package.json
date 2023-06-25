@@ -1,0 +1,34 @@
+{
+  "name": "posts",
+  "version": "1.0.0",
+  "description": "All functions related to posts like, add post, search post, verify post, etc",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KrishPatel10/AddPost.git"
+  },
+  "keywords": [
+    "Post",
+    "AddPost",
+    "SearchPost"
+  ],
+  "author": "Krish Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KrishPatel10/AddPost/issues"
+  },
+  "homepage": "https://github.com/KrishPatel10/AddPost#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "joi": "^17.9.2",
+    "mongodb": "^5.6.0",
+    "mongoose": "^7.3.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.22"
+  }
+}
