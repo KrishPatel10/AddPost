@@ -1,31 +1,19 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import PostForm from './posts';
+import AddPost from './addPosts';
 import Navbar from './Navbar';
-
-const Home = () => {
-  return <h1>Welcome to the Home Page!</h1>;
-};
+import Home from './Home/home';
+import PostDetails from './postDetails';
 
 const App = () => {
   return (
     <>
       <Router>
         <Navbar />
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/posts">Posts</Link>
-            </li>
-          </ul>
-        </nav>
-
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/posts" element={<PostForm />} />
+          <Route exact path="/posts/addpost" element={<AddPost />} />
+          <Route exact path="/posts/all" element={<Home />} />
+          <Route exact path="/posts/:postId" element={<PostDetails />} />
         </Routes>
       </Router>
     </>

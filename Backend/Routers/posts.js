@@ -146,7 +146,7 @@ async function createIndex() {
     }
   };
 
-router.post('/', upload.array('files'), (req, res) => {
+router.post('/addPost', upload.array('files'), (req, res) => {
     console.log(req.body);
     const { error } = postSchema.validate(req.body);
     if (error) {
@@ -169,7 +169,7 @@ router.post('/', upload.array('files'), (req, res) => {
       description,
       author,
       date: new Date(),
-      files
+      if(files) {files}
     });
   
     const id = post._id.toString();

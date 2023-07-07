@@ -11,17 +11,21 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 10,
-    maxlength: 500
+    maxlength: 5000
   },
   author: {
     type: String,
     required: true
   },
+  uploadOption: {
+    type: String,
+    enum: ['personal', 'community'],
+    default: 'personal'
+  },
   date: {
     type: Date,
     default: Date.now
   },
-  category: String,
   files: [{
     filename: String,
     contentType: String,

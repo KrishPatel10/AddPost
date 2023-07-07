@@ -1,19 +1,18 @@
 const Joi = require('joi');
 
-const postSchema = Joi.object({
-  title: Joi.string().required().min(5).max(100),
-  description: Joi.string().required().min(10).max(500),
+const postValidationSchema = Joi.object({
+  title: Joi.string().min(5).max(100).required(),
+  description: Joi.string().min(10).max(5000).required(),
   author: Joi.string().required(),
-  date: Joi.date().optional(),
-  category: Joi.string().optional(),
+  uploadOption: Joi.string().valid('personal', 'community').default('personal'),
+  date: Joi.date().default(Date.now),
   files: Joi.array().items(
     Joi.object({
-      path: Joi.string().required(),
-      filename: Joi.string().optional(),
-      contentType: Joi.string().optional(),
-      fileData: Joi.binary().optional()
+      filename: Joi.string(),
+      contentType: Joi.string(),
+      fileData: Joi.binary()
     })
   )
 });
 
-module.exports = postSchema;
+module.exports = postValidationSchema;

@@ -6,7 +6,7 @@ export default function Navbar() {
       <div className="w-1/2">
         <li className="flex text-white hover:text-darkbg py-2">
           <ul className="px-5">
-            <Link to="/cards" className="text-white hover:text-darkbg">
+            <Link to="/posts/all" className="text-white hover:text-darkbg">
               <h2 className="text-2xl font-bold">Home</h2>
             </Link>
           </ul>
@@ -19,7 +19,7 @@ export default function Navbar() {
           </ul>
           <ul className="px-5">
             <Link
-              to="/posts"
+              to="/posts/addpost"
               className="text-white hover:text-darkbg">
               < h2 className="text-2xl font-bold">AddPost</ h2>
             </Link>
