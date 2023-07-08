@@ -197,9 +197,12 @@ router.post('/addPost', upload.array('files'), (req, res) => {
       });
   });
 
-router.get('/searchq', async (req, res) => {
+router.post('/searchq', async (req, res) => {
+    console.log(req.body);
     const query = req.body.query;
-    // console.log(query);
+    if(!query) {
+        return;
+    }
     res.json({ rs: await searchDocuments(query) });
 });
   

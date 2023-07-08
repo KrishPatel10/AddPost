@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import Home from './Home/home';
 import PostDetails from './postDetails';
 
+
 const App = () => {
   return (
     <>
