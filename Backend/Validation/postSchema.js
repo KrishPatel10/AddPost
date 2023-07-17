@@ -8,9 +8,16 @@ const postValidationSchema = Joi.object({
   date: Joi.date().default(Date.now),
   files: Joi.array().items(
     Joi.object({
-      filename: Joi.string(),
-      contentType: Joi.string(),
-      fileData: Joi.binary()
+      filename: Joi.string().required(),
+      contentType: Joi.string().required(),
+      fileData: Joi.binary().required()
+    })
+  ),
+  comments: Joi.array().items(
+    Joi.object({
+      content: Joi.string().required(),
+      user: Joi.string().required(),
+      date: Joi.date().default(Date.now)
     })
   )
 });

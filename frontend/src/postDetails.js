@@ -5,19 +5,37 @@ import axios from 'axios';
 const PostDetails = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/posts/${postId}`);
         setPost(response.data);
+        setComments(response.data.comments);
       } catch (error) {
         console.log('Error fetching post details:', error);
       }
     };
 
     fetchPost();
-  }, [postId]);
+  }, [postId, comments]);
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`http://localhost:5000/posts/${postId}/comments`, {
+        content: comment, user: 'Test User'
+      });
+      const newComment = response.data;
+      setComments([...comments, newComment]);
+      setComment('');
+    } catch (error) {
+      console.log('Error submitting comment:', error);
+    }
+  };
 
   if (!post) {
     return <div>Loading...</div>;
@@ -44,6 +62,27 @@ const PostDetails = () => {
               ))}
             </div>
           )}
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2">Comments:</h3>
+            {comments.map((comment, index) => (
+              <div key={index} className="bg-gray-100 p-4 rounded-md mb-4">
+                <p className="text-gray-600 mb-2">{comment.content}</p>
+                <p className="text-gray-600 mb-2">User: {comment.user}</p>
+                {/* <p className="text-gray-600 mb-2">Date: {comment.date}</p> */}
+              </div>
+            ))}
+            <form onSubmit={handleCommentSubmit}>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="w-full px-4 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              ></textarea>
+              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2">
+                Add Comment
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

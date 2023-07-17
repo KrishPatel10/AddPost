@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { Client } = require('@elastic/elasticsearch');
 const multer = require('multer');
-const postSchema = require('../schemas/postSchema');
+const postSchema = require('../Validation/postSchema');
+const commentValidationSchema = require('../Validation/commentValidationSchema');
 
 const username = 'elastic'
 const password = 'gMgOt5IL5xGbuceU2HHpEgug'
@@ -226,6 +227,38 @@ router.post('/searchq', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
       });
   });
+
+  
+
+router.post('/:postId/comments', async (req, res) => {
+  try {
+    const { error } = commentValidationSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const postId = req.params.postId;
+    const { content, user } = req.body;
+
+    // Find the post by postId
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Add the comment to the post's comments array
+    const newComment = { content, user };
+    post.comments.push(newComment);
+
+    // Save the updated post
+    await post.save();
+
+    res.status(201).json({ message: 'Comment added successfully', comment: newComment });
+  } catch (error) {
+    console.log('Error adding comment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 

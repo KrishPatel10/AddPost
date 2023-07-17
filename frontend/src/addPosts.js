@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AddPost = () => {
   const [title, setTitle] = useState('');
@@ -7,6 +8,8 @@ const AddPost = () => {
   const [author, setAuthor] = useState('');
   const [files, setFiles] = useState([]);
   const [uploadOption, setUploadOption] = useState('personal');
+
+  const navigate = useNavigate();
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -21,7 +24,24 @@ const AddPost = () => {
   };
 
   const handleFileChange = (event) => {
-    setFiles([...event.target.files]);
+    const selectedFiles = event.target.files;
+    const updatedFiles = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const fileType = e.target.result.split(';')[0].split(':')[1];
+        updatedFiles.push({ file, fileType });
+
+        if (updatedFiles.length === selectedFiles.length) {
+          setFiles(updatedFiles);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleUploadOptionChange = (event) => {
@@ -37,12 +57,13 @@ const AddPost = () => {
     formData.append('author', author);
     formData.append('uploadOption', uploadOption);
     for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
+      formData.append('files', files[i].file);
     }
 
     try {
       await axios.post('http://localhost:5000/posts/addpost', formData);
       // Post successfully added, you can redirect or show a success message
+      navigate('/posts/all');
     } catch (error) {
       console.log('Error adding post:', error);
     }
@@ -54,7 +75,9 @@ const AddPost = () => {
         <h1 className="text-3xl font-bold mb-4">Add Post</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-gray-700 font-semibold mb-1">Title</label>
+            <label htmlFor="title" className="block text-gray-700 font-semibold mb-1">
+              Title
+            </label>
             <input
               type="text"
               id="title"
@@ -65,7 +88,9 @@ const AddPost = () => {
             />
           </div>
           <div>
-            <label htmlFor="description" className="block text-gray-700 font-semibold mb-1">Description</label>
+            <label htmlFor="description" className="block text-gray-700 font-semibold mb-1">
+              Description
+            </label>
             <textarea
               id="description"
               value={description}
@@ -75,7 +100,9 @@ const AddPost = () => {
             />
           </div>
           <div>
-            <label htmlFor="author" className="block text-gray-700 font-semibold mb-1">Author</label>
+            <label htmlFor="author" className="block text-gray-700 font-semibold mb-1">
+              Author
+            </label>
             <input
               type="text"
               id="author"
@@ -86,7 +113,9 @@ const AddPost = () => {
             />
           </div>
           <div className="flex items-center">
-            <label htmlFor="file" className="block text-gray-700 font-semibold mr-2">Files</label>
+            <label htmlFor="file" className="block text-gray-700 font-semibold mr-2">
+              Files
+            </label>
             <label
               htmlFor="file"
               className="flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition-all duration-200"
@@ -101,11 +130,13 @@ const AddPost = () => {
               />
             </label>
             {files.length > 0 && (
-              <span className="-2 text-gray-700">{files.length} files selected</span>
+              <span className="-2 text-gray-700">{files.length} Files Selected</span>
             )}
           </div>
           <div className="flex items-center">
-            <label htmlFor="uploadOption" className="block text-gray-700 font-semibold mr-2">Upload Option</label>
+            <label htmlFor="uploadOption" className="block text-gray-700 font-semibold mr-2">
+              Upload Option
+            </label>
             <select
               id="uploadOption"
               value={uploadOption}

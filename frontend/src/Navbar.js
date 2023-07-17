@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export default function Navbar() {
   return (
-    <div className="h-1/7 flex w-full z-50 top-0 fixed bg-redd">
+    <div className="h-1/7 flex w-full z-50 top-0 fixed bg-redd mb-12">
       <div className="w-1/2 flex">
         <ul className="flex text-white">
           <li className="px-5">

@@ -19,7 +19,6 @@ const postSchema = new mongoose.Schema({
   },
   uploadOption: {
     type: String,
-    enum: ['personal', 'community'],
     default: 'personal'
   },
   date: {
@@ -30,6 +29,14 @@ const postSchema = new mongoose.Schema({
     filename: String,
     contentType: String,
     fileData: Buffer
+  }],
+  comments: [{
+    user: String,
+    content: String,
+    date: {
+      type: Date,
+      default: Date.now
+    }
   }]
 });
 
