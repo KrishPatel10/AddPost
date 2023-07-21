@@ -4,6 +4,7 @@ const { Client } = require('@elastic/elasticsearch');
 const multer = require('multer');
 const postSchema = require('../Validation/postSchema');
 const commentValidationSchema = require('../Validation/commentValidationSchema');
+// const {User} = require('../models/user');
 
 const username = 'elastic'
 const password = 'gMgOt5IL5xGbuceU2HHpEgug'
@@ -19,6 +20,7 @@ const client = new Client({
 
 // Import the Post model
 const Post = require('../models/post');
+const { User } = require('../models/user');
 
 // Configure Multer for file uploads
 const storage = multer.memoryStorage();
@@ -147,9 +149,43 @@ async function createIndex() {
     }
   };
 
-router.post('/addPost', upload.array('files'), (req, res) => {
+router.post('/adduser', async (req, res) => {
+    console.log(req.body);
+
+    const users = await User.findOne({Name: req.body.Name});
+
+    console.log(users);
+
+    if(users){
+      return res.status(400).json(users);
+    }
+    else{
+      const user = new User({
+        Name: req.body.Name,
+        Email: req.body.Email,
+        Password: req.body.Password,
+        PhoneNum: req.body.PhoneNum,
+        Role: req.body.Role,
+        followers: [],
+        following: [],
+        posts: [],
+      });
+    
+      user.save()
+        .then(() => {
+          res.status(201).json({ message: 'User created successfully' });
+        })
+        .catch((error) => {
+          res.status(500).json({ error: error });
+        });
+    }
+
+});
+
+router.post('/addPost', upload.array('files'),async (req, res) => {
     console.log(req.body);
     const { error } = postSchema.validate(req.body);
+
     if (error) {
       console.log(error);
       res.status(400).json({ error: error.details[0].message });
@@ -174,6 +210,24 @@ router.post('/addPost', upload.array('files'), (req, res) => {
     });
   
     const id = post._id.toString();
+
+    try {
+      const user = await User.findOne({Name: req.body.author});
+  
+      if (!user) {
+        console.log('User not found.');
+        return;
+      }
+  
+      // Append the postId to the beginning of the posts array
+      user.posts.unshift(id);
+  
+      // Save the updated user document
+      await user.save();
+      console.log('ID appended to the posts array successfully.');
+    } catch (error) {
+      console.error('Error appending ID to the posts array:', error);
+    }
   
     // Add the post to ElasticSearch using addRandomDocument function
     addDocument({ description, title, id });
@@ -185,7 +239,7 @@ router.post('/addPost', upload.array('files'), (req, res) => {
       .catch((error) => {
         res.status(500).json({ error: error });
       });
-  });
+});
   
   //write a get request to get all posts
   router.get('/all', (req, res) => {
